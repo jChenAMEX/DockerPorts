@@ -1,0 +1,61 @@
+docker build -t godocker:0.0.1 .
+
+docker run -p 8090:8090 -p 8091:8091 -p 8092:8092 godocker:0.0.1
+
+https://kubernetes.io/docs/tutorials/hello-minikube/
+
+$eval $(minikube docker-env)
+$docker build -t ports:0.0.1 .
+$kubectl run muti-ports --image=ports:0.0.1 --image-pull-policy=Never
+
+
+$kubectl create deployment multi-ports --image=ports:0.0.1
+$kubectl get deployments
+$kubectl get pods
+$kubectl get events
+$kubectl config view
+
+
+$kubectl expose deployment multi-ports --type=LoadBalancer --port=9000,9001,9002
+$kubectl get services
+$kubectl describe service multi-ports 
+
+minikube dashboard
+
+
+
+kubectl expose deployment multi-ports --type=LoadBalancer --name=mainport --port=9000 --target-port=9000
+
+kubectl expose deployment multi-ports --type=LoadBalancer --name=portone --port=9001 --target-port=9001
+
+kubectl expose deployment multi-ports --type=LoadBalancer --name=porttwo --port=9002 --target-port=9002
+
+$minikube service mainport
+| default   | mainport |        9000 | http://192.168.64.8:32474 |
+minikube addons list
+minikube addons enable metrics-server
+
+
+
+
+
+kubectl expose deployment ml3 --type=LoadBalancer --name=management --port=80 --target-port=8000
+kubectl expose deployment ml3 --type=LoadBalancer --name=query --port=80 --target-port=8001
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp <-- use a proper selector for your pods
+  ports:
+  - name: management 
+    protocol: TCP
+    port: 80
+    targetPort: 8000
+  - name: query 
+    protocol: TCP
+    port: 81
+    targetPort: 8001
